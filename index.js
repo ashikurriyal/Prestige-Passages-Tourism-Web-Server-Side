@@ -31,31 +31,57 @@ async function run() {
 
 
         const placeCollection = client.db('PrestigePassagesDB').collection('place')
-        app.get('/place', async(req,res) => {
+        app.get('/place', async (req, res) => {
             const cursor = placeCollection.find()
             const result = await cursor.toArray()
             res.send(result)
         })
-        app.get('/place/:id', async(req,res) => {
+        app.get('/place/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await placeCollection.findOne(query)
             res.send(result)
         })
 
         //for my list page (email)
-        app.get('/myList/:email', async(req,res) => {
+        app.get('/myList/:email', async (req, res) => {
             const email = req.params.email;
-            const query = {email:(email)}
+            const query = { email: (email) };
             const result = await placeCollection.find(query).toArray()
             res.send(result);
         })
-        app.post('/place', async(req,res) => {
-            const place = req.body
+        app.post('/place', async (req, res) => {
+            const place = req.body;
             const result = await placeCollection.insertOne(place)
             res.send(result);
             console.log(result);
         })
+
+        //update
+        app.put('/place/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const updatedItem = req.body
+            const item = {
+                $set: {
+                    tourists_spot_name: updatedItem.tourists_spot_name,
+                    short_description: updatedItem.short_description,
+                    average_cost: updatedItem.average_cost,
+                    country_Name: updatedItem.country_Name,
+                    location: updatedItem.location,
+                    seasonality: updatedItem.seasonality,
+                    travel_time: updatedItem.travel_time,
+                    image: updatedItem.image,
+                    totaVisitorsPerYear: updatedItem.totaVisitorsPerYear
+                }
+            }
+            const result = await itemsCollection.updateOne(filter, item)
+            res.send(result)
+        })
+
+        //delete
+        
+
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
