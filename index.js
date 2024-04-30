@@ -42,10 +42,18 @@ async function run() {
             const result = await placeCollection.findOne(query)
             res.send(result)
         })
+
+        //for my list page (email)
+        app.get('/myList/:email', async(req,res) => {
+            const email = req.params.email;
+            const query = {email:(email)}
+            const result = await placeCollection.find(query).toArray()
+            res.send(result);
+        })
         app.post('/place', async(req,res) => {
             const place = req.body
             const result = await placeCollection.insertOne(place)
-            res.send(result)
+            res.send(result);
             console.log(result);
         })
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
