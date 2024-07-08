@@ -60,8 +60,9 @@ async function run() {
         //update
         app.put('/place/:id', async (req, res) => {
             const id = req.params.id
+            console.log(id)
             const filter = { _id: new ObjectId(id) }
-            const updatedItem = req.body
+            const updatedItem = req.body;
             const item = {
                 $set: {
                     tourists_spot_name: updatedItem.tourists_spot_name,
@@ -75,16 +76,26 @@ async function run() {
                     totaVisitorsPerYear: updatedItem.totaVisitorsPerYear
                 }
             }
-            const result = await itemsCollection.updateOne(filter, item)
+            const result = await placeCollection.updateOne(filter, item)
+            res.send(result);
+        })
+
+        app.get('/country/:country_Name', async(req,res) => {
+            const country_Name = req.params.country_Name
+            const query = {country_Name: country_Name}
+            const result = await placeCollection.find(query).toArray()
             res.send(result)
         })
 
         //delete
-        app.delete('/mylist/:id', async (req, res) => {
+        app.delete('/myList/:id', async (req, res) => {
             const id = req.params.id
+            // console.log(id);
             const query = { _id: new ObjectId(id) }
-            const result = await itemsCollection.deleteOne(query)
-            res.send(result)
+            // console.log(query)
+            const result = await placeCollection.deleteOne(query);
+            // console.log(result)
+            res.send(result);
           })
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -100,7 +111,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Server Ongoing')
+    res.send('Prestige Passages Server is OnGoing!')
 })
 app.listen(port, () => {
     console.log(`Server is running on port${port}`)
